@@ -30,5 +30,7 @@ CREATE TABLE order_items (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES orders(id),
-    CONSTRAINT fk_order_items_item FOREIGN KEY (item_id) REFERENCES items(id)
+    CONSTRAINT fk_order_items_item FOREIGN KEY (item_id) REFERENCES items(id),
+    deleted BOOLEAN NOT NULL DEFAULT FALSE
+
 );
