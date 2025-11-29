@@ -35,7 +35,7 @@ public class Order extends AuditableEntity {
     private OrderStatus orderStatus;
 
     @Column(columnDefinition = "NUMERIC")
-    private double totalPrice;
+    private Double totalPrice;
 
     @Column(name = "deleted")
     private boolean deleted;
