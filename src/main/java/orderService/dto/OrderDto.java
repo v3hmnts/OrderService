@@ -16,5 +16,5 @@ public class OrderDto{
     private OrderStatus orderStatus;
     private Double totalPrice;
     private Boolean deleted;
-    private List<OrderItemDto> orderItems;
+    private List<OrderItemDto> orderItemList;
 }

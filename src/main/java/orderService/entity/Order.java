@@ -21,7 +21,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE orders SET deleted = true WHERE id=?")
-@SQLRestriction("deleted = false")
 public class Order extends AuditableEntity {
 
     @Id
@@ -65,13 +64,16 @@ public class Order extends AuditableEntity {
             if (orderItem.getOrder().equals(this) && orderItem.getItem().equals(item)) {
                 if (orderItem.getQuantity() > quantity) {
                     orderItem.setQuantity(orderItem.getQuantity() - quantity);
+                    break;
                 }else if(orderItem.getQuantity().equals(quantity)){
                     orderItemList.remove(orderItem);
+                    orderItem.getItem().getOrderItemList().remove(orderItem);
                     orderItem.setOrder(null);
                     orderItem.setItem(null);
                     orderItem.setQuantity(0);
+                    break;
                 }else{
-                    throw new RuntimeException("Cannod delete more");
+                    throw new RuntimeException("Can't delete more that in order");
                 }
             }
         }
@@ -85,6 +87,9 @@ public class Order extends AuditableEntity {
             return false;
 
         Order that = (Order) o;
+        if(this.getId()==null || that.getId()==null){
+            return false;
+        }
         return Objects.equals(this.id, that.id);
     }
 

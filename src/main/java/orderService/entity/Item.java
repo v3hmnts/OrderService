@@ -19,7 +19,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE items SET deleted = true WHERE id=?")
-@SQLRestriction("deleted = false")
 public class Item extends AuditableEntity {
 
     @Id
@@ -49,6 +48,11 @@ public class Item extends AuditableEntity {
             return false;
 
         Item that = (Item) o;
+
+        if(this.getId()==null || that.getId()==null){
+            return false;
+        }
+
         return Objects.equals(this.id, that.id);
     }
 
