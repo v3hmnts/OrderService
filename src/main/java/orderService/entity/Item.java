@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,8 +28,8 @@ public class Item extends AuditableEntity {
 
     private String name;
 
-    @Column(name = "price", columnDefinition = "NUMERIC")
-    private Double price;
+    @Column(name = "price", precision = 12, scale = 2)
+    private BigDecimal price;
 
     @OneToMany(
             mappedBy = "item",
