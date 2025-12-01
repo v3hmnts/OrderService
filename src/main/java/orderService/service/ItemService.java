@@ -13,6 +13,6 @@ public interface ItemService {
     public ItemDto findById(Long itemId);
     public ItemDto updateItemById(Long itemId, ItemUpdateDto itemUpdateDto);
     public void deleteItemById(Long itemId);
-    public PageDto<ItemDto> findAll(ItemFilterRequest itemFilterRequest, Pageable pageable);
+    public PageDto<ItemDto> findAll(Pageable pageable);
 
 }

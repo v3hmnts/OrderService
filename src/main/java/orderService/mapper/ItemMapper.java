@@ -1,8 +1,9 @@
 package orderService.mapper;
 
-import orderService.dto.ItemDto;
+import orderService.dto.*;
 import orderService.entity.Item;
 import org.mapstruct.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,8 +14,17 @@ public interface ItemMapper {
     List<ItemDto> toDtoList(List<Item> items);
     List<Item> toEntityList(List<ItemDto> itemDtos);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "created_at", ignore = true)
+    @Mapping(target = "updated_at", ignore = true)
+    Item toEntity(ItemCreateRequestDto itemCreateRequestDto);
+    @Mapping(source = "number", target = "size")
+    PageDto<ItemDto> toPageDto(Page<ItemDto> itemDtoPage);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    void updateFromDto(ItemDto itemDto, @MappingTarget Item item);
+    @Mapping(target = "created_at", ignore = true)
+    @Mapping(target = "updated_at", ignore = true)
+    void updateFromDto(ItemUpdateDto itemDto, @MappingTarget Item item);
 
 }

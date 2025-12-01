@@ -5,12 +5,14 @@ import orderService.dto.ItemDto;
 import orderService.dto.ItemUpdateDto;
 import orderService.dto.PageDto;
 import orderService.entity.Item;
+import orderService.exception.ItemNotFoundException;
 import orderService.mapper.ItemMapper;
 import orderService.repository.ItemRepository;
 import orderService.service.ItemService;
 import orderService.specification.ItemFilterRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -24,30 +26,36 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto createItem(ItemCreateRequestDto itemCreateRequestDto) {
-        Item item = new Item();
-        item.setName(itemCreateRequestDto.name());
-        item.setPrice(itemCreateRequestDto.price());
+        Item item = itemMapper.toEntity(itemCreateRequestDto);
         return itemMapper.toDto(itemRepository.save(item));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemDto findById(Long itemId) {
-        return null;
+        Item item = itemRepository.findById(itemId).orElseThrow(()-> new ItemNotFoundException(itemId));
+        return itemMapper.toDto(item);
     }
 
     @Override
+    @Transactional
     public ItemDto updateItemById(Long itemId, ItemUpdateDto itemUpdateDto) {
-        return null;
+        Item itemToUpdate = itemRepository.findById(itemId).orElseThrow(()-> new ItemNotFoundException(itemId));
+        itemMapper.updateFromDto(itemUpdateDto,itemToUpdate);
+        return itemMapper.toDto(itemRepository.save(itemToUpdate));
     }
 
     @Override
+    @Transactional
     public void deleteItemById(Long itemId) {
-
+        itemRepository.deleteById(itemId);
     }
 
     @Override
-    public PageDto<ItemDto> findAll(ItemFilterRequest itemFilterRequest, Pageable pageable) {
-        return null;
+    @Transactional(readOnly = true)
+    public PageDto<ItemDto> findAll(Pageable pageable) {
+        return itemMapper.toPageDto(itemRepository.findAll(pageable).map(itemMapper::toDto));
     }
 }
