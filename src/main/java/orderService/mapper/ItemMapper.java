@@ -15,16 +15,12 @@ public interface ItemMapper {
     List<Item> toEntityList(List<ItemDto> itemDtos);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "created_at", ignore = true)
-    @Mapping(target = "updated_at", ignore = true)
     Item toEntity(ItemCreateRequestDto itemCreateRequestDto);
     @Mapping(source = "number", target = "size")
     PageDto<ItemDto> toPageDto(Page<ItemDto> itemDtoPage);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "created_at", ignore = true)
-    @Mapping(target = "updated_at", ignore = true)
     void updateFromDto(ItemUpdateDto itemDto, @MappingTarget Item item);
 
 }

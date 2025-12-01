@@ -2,6 +2,7 @@ package orderService.service;
 
 import orderService.dto.OrderCreateRequestDto;
 import orderService.dto.OrderDto;
+import orderService.dto.OrderUpdateDto;
 import orderService.dto.PageDto;
 import orderService.specification.OrderFilterRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ public interface OrderService {
     public List<OrderDto> findAllByUserId(Long userId);
     public OrderDto createOrder(OrderCreateRequestDto orderCreateRequestDto);
     public PageDto<OrderDto> findAll(OrderFilterRequest orderFilterRequest, Pageable pageable);
-    public OrderDto updateOrderById(Long orderId,OrderDto orderDto);
+    public PageDto<OrderDto> findAllWithAllData(OrderFilterRequest orderFilterRequest, Pageable pageable);
+    public OrderDto updateOrderById(Long orderId,OrderUpdateDto orderDto);
 
 }

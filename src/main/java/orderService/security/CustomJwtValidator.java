@@ -1,9 +1,10 @@
 package orderService.security;
 
-import UserService.dto.TokenValidationResponse;
-import UserService.exception.TokenValidationException;
+
 import io.jsonwebtoken.*;
 import lombok.Getter;
+import orderService.dto.TokenValidationResponse;
+import orderService.exception.TokenValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

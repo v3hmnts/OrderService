@@ -1,13 +1,12 @@
 package orderService.service.impl;
 
-import orderService.dto.OrderCreateRequestDto;
-import orderService.dto.OrderDto;
-import orderService.dto.OrderItemCreateRequestDto;
-import orderService.dto.PageDto;
+import orderService.dto.*;
 import orderService.entity.Item;
 import orderService.entity.Order;
 import orderService.entity.OrderItem;
 import orderService.entity.enums.OrderStatus;
+import orderService.exception.ItemNotFoundException;
+import orderService.exception.OrderNotFoundException;
 import orderService.mapper.OrderMapper;
 import orderService.repository.ItemRepository;
 import orderService.repository.OrderRepository;
@@ -36,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(readOnly = true)
     public OrderDto findById(Long orderId){
-        Order order = orderRepository.findById(orderId).orElseThrow();
+        Order order = orderRepository.findById(orderId).orElseThrow(()->new OrderNotFoundException(orderId));
         return orderMapper.toDto(order);
     }
 
@@ -51,9 +50,9 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setUserId(orderCreateRequestDto.getUserId());
         newOrder.setOrderStatus(OrderStatus.PENDING);
         List<OrderItemCreateRequestDto> itemCreateRequestDtos = orderCreateRequestDto.getOrderItemList();
-        for(var i=0;i<itemCreateRequestDtos.size();i++){
-            Item itemToAdd =itemRepository.findById(itemCreateRequestDtos.get(i).itemId()).orElseThrow();
-            newOrder.addItem(itemToAdd,itemCreateRequestDtos.get(i).quantity());
+        for (OrderItemCreateRequestDto itemCreateRequestDto : itemCreateRequestDtos) {
+            Item itemToAdd = itemRepository.findById(itemCreateRequestDto.itemId()).orElseThrow();
+            newOrder.addItem(itemToAdd, itemCreateRequestDto.quantity());
         }
         newOrder.updateTotalPrice();
         return newOrder;
@@ -61,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderDto> findAllByUserId(Long userId){
-        List<Order> userOrderList = orderRepository.findByUserId(userId).orElseThrow();
+        List<Order> userOrderList = orderRepository.findByUserId(userId);
         return orderMapper.toDtoList(userOrderList);
     }
 
@@ -72,36 +71,32 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(readOnly = true)
     public PageDto<OrderDto> findAll(OrderFilterRequest orderFilterRequest, Pageable pageable){
+        Page<Order> dtoPage = orderRepository.findAll(orderFilterRequest.toSpecification(),pageable);
+        return orderMapper.toPageDto(dtoPage.map(orderMapper::toDto));
+    }
+
+    @Transactional(readOnly = true)
+    public PageDto<OrderDto> findAllWithAllData(OrderFilterRequest orderFilterRequest, Pageable pageable){
         Page<Order> dtoPage = orderRepository.findAll(orderFilterRequest.toSpecification().and(OrderSpecification.withAllData()),pageable);
         return orderMapper.toPageDto(dtoPage.map(orderMapper::toDto));
     }
 
     @Transactional
-    public OrderDto updateOrderById(Long orderId, OrderDto orderDto){
-        Order order = orderRepository.findById(orderId).orElseThrow();
+    public OrderDto updateOrderById(Long orderId, OrderUpdateDto orderDto){
+        Order order = orderRepository.findById(orderId).orElseThrow(()->new OrderNotFoundException(orderId));
         handleOrderUpdate(order,orderDto);
         return orderMapper.toDto(orderRepository.save(order));
     }
 
-    @Transactional
-    public OrderDto deleteOrderById(Long orderId){
-        orderRepository.deleteById(orderId);
-        Order order = orderRepository.findById(orderId).orElseThrow();
-        return orderMapper.toDto(orderRepository.save(order));
-    }
-
-    private void handleOrderUpdate(Order order,OrderDto orderDto){
+    private void handleOrderUpdate(Order order, OrderUpdateDto orderDto){
         if ( orderDto == null ) {
             return;
         }
-        if ( orderDto.getOrderStatus() != null ) {
-            order.setOrderStatus( orderDto.getOrderStatus() );
+        if ( orderDto.orderStatus() != null ) {
+            order.setOrderStatus(OrderStatus.valueOf(orderDto.orderStatus()));
         }
-        if ( orderDto.getTotalPrice() != null ) {
-            order.setTotalPrice( orderDto.getTotalPrice() );
-        }
-        if ( orderDto.getDeleted() != null ) {
-            order.setDeleted( orderDto.getDeleted() );
+        if ( orderDto.deleted() != null ) {
+            order.setDeleted( orderDto.deleted() );
         }
 
         for(var i=0;i<order.getOrderItemList().size();i++){
@@ -112,16 +107,10 @@ public class OrderServiceImpl implements OrderService {
             oldOrderItem.setQuantity(0);
         };
         order.getOrderItemList().clear();
-        orderDto.getOrderItemList().forEach(orderItemDto -> {
-            Item item = itemRepository.findById(orderItemDto.itemDto().id()).orElseThrow();
+        orderDto.orderItemList().forEach(orderItemDto -> {
+            Item item = itemRepository.findById(orderItemDto.itemId()).orElseThrow(()->new ItemNotFoundException(orderItemDto.itemId()));
             order.addItem(item,orderItemDto.quantity());
         });
         order.updateTotalPrice();
     }
-
-//    private Order handleOrderCreation(OrderDto orderDto){
-//        Order newOrder = new Order();
-//        newOrder.setOrderStatus(OrderStatus.CONFIRMED);
-//        newOrder.setUserId(orderDto);
-//    }
 }

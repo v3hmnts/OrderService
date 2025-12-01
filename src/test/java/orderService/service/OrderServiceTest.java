@@ -1,9 +1,7 @@
 package orderService.service;
 
 import orderService.TestcontainersConfig;
-import orderService.dto.OrderDto;
-import orderService.dto.OrderItemDto;
-import orderService.dto.PageDto;
+import orderService.dto.*;
 import orderService.entity.Item;
 import orderService.entity.Order;
 import orderService.entity.enums.OrderStatus;
@@ -175,22 +173,18 @@ class OrderServiceTest {
         order.setOrderStatus(OrderStatus.CANCELED);
         Order savedOrder = orderRepository.save(order);
 
-        OrderDto updateOrderDto = orderServiceImpl.findById(savedOrder.getId());
-        updateOrderDto.setOrderStatus(OrderStatus.CONFIRMED);
-        updateOrderDto.setDeleted(true);
-        OrderItemDto orderItemDto1 = updateOrderDto.getOrderItemList().get(0);
-        OrderItemDto orderItemDto2 = updateOrderDto.getOrderItemList().get(1);
-        OrderItemDto newOrderItemDto1 = new OrderItemDto(orderItemDto1.id(), orderItemDto1.itemDto(), 5, orderItemDto1.deleted());
-        OrderItemDto newOrderItemDto2 = new OrderItemDto(orderItemDto2.id(), orderItemDto2.itemDto(), 10, orderItemDto2.deleted());
-        updateOrderDto.getOrderItemList().set(0, newOrderItemDto1);
-        updateOrderDto.getOrderItemList().set(1, newOrderItemDto2);
+
+        OrderItemCreateRequestDto orderItemCreateRequestDto1 = new OrderItemCreateRequestDto(item1.getId(),5);
+        OrderItemCreateRequestDto orderItemCreateRequestDto2 = new OrderItemCreateRequestDto(item2.getId(),10);
+        OrderUpdateDto orderUpdateDto = new OrderUpdateDto("CONFIRMED", List.of(orderItemCreateRequestDto1,orderItemCreateRequestDto2),false);
+
 
         // Act
-        OrderDto result = orderServiceImpl.updateOrderById(savedOrder.getId(), updateOrderDto);
+        OrderDto result = orderServiceImpl.updateOrderById(savedOrder.getId(), orderUpdateDto);
 
         // Assert
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
-        assertEquals(0,result.getTotalPrice().compareTo(item1.getPrice().multiply(BigDecimal.valueOf(newOrderItemDto1.quantity())).add(item2.getPrice().multiply(BigDecimal.valueOf(newOrderItemDto2.quantity())))));
+        assertEquals(0,result.getTotalPrice().compareTo(item1.getPrice().multiply(BigDecimal.valueOf(orderItemCreateRequestDto1.quantity())).add(item2.getPrice().multiply(BigDecimal.valueOf(orderItemCreateRequestDto2.quantity())))));
         assertTrue(result.getDeleted());
 
     }
