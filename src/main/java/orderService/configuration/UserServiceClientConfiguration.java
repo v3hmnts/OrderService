@@ -12,7 +12,7 @@ public class UserServiceClientConfiguration {
     private String userServiceUri;
 
     @Bean
-    public RestClient userServiceRestClient(){
+    public RestClient userServiceRestClient() {
         return RestClient.create(userServiceUri);
     }
 

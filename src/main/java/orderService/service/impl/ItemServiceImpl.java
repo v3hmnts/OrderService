@@ -9,7 +9,6 @@ import orderService.exception.ItemNotFoundException;
 import orderService.mapper.ItemMapper;
 import orderService.repository.ItemRepository;
 import orderService.service.ItemService;
-import orderService.specification.ItemFilterRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,15 +34,15 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public ItemDto findById(Long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(()-> new ItemNotFoundException(itemId));
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         return itemMapper.toDto(item);
     }
 
     @Override
     @Transactional
     public ItemDto updateItemById(Long itemId, ItemUpdateDto itemUpdateDto) {
-        Item itemToUpdate = itemRepository.findById(itemId).orElseThrow(()-> new ItemNotFoundException(itemId));
-        itemMapper.updateFromDto(itemUpdateDto,itemToUpdate);
+        Item itemToUpdate = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
+        itemMapper.updateFromDto(itemUpdateDto, itemToUpdate);
         return itemMapper.toDto(itemRepository.save(itemToUpdate));
     }
 

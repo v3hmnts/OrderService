@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class Item extends AuditableEntity {
 
         Item that = (Item) o;
 
-        if(this.getId()==null || that.getId()==null){
+        if (this.getId() == null || that.getId() == null) {
             return false;
         }
 

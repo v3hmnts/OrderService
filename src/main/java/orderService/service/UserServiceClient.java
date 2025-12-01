@@ -5,6 +5,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 public interface UserServiceClient {
 
-    public UserDto findUserById(Long userId, JwtAuthenticationToken jwtAuthenticationToken);
+    public UserDto findUserById(Long userId);
 
 }

@@ -9,6 +9,6 @@ public record ErrorResponse(
         Instant timestamp,
         String message,
         HttpStatus status,
-        List<String>details
+        List<String> details
 ) {
 }

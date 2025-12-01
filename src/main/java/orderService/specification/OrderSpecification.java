@@ -1,7 +1,6 @@
 package orderService.specification;
 
 import jakarta.persistence.criteria.Fetch;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import orderService.entity.Order;
 import orderService.entity.OrderItem;
@@ -28,6 +27,7 @@ public class OrderSpecification {
             return status == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get("orderStatus"), status);
         });
     }
+
     public static Specification<Order> withAllData() {
         return (root, query, criteriaBuilder) -> {
             if (query.getResultType() == Long.class || query.getResultType() == long.class) {

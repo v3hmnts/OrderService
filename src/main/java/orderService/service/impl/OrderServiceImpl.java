@@ -11,6 +11,7 @@ import orderService.mapper.OrderMapper;
 import orderService.repository.ItemRepository;
 import orderService.repository.OrderRepository;
 import orderService.service.OrderService;
+import orderService.service.UserServiceClient;
 import orderService.specification.OrderFilterRequest;
 import orderService.specification.OrderSpecification;
 import org.springframework.data.domain.Page;
@@ -26,23 +27,27 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
+    private final UserServiceClient userServiceClient;
 
-    public OrderServiceImpl(OrderMapper orderMapper, OrderRepository orderRepository, ItemRepository itemRepository) {
+    public OrderServiceImpl(OrderMapper orderMapper, OrderRepository orderRepository, ItemRepository itemRepository, UserServiceClient userServiceClient) {
         this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
         this.itemRepository = itemRepository;
+        this.userServiceClient = userServiceClient;
     }
 
     @Transactional(readOnly = true)
-    public OrderDto findById(Long orderId){
-        Order order = orderRepository.findById(orderId).orElseThrow(()->new OrderNotFoundException(orderId));
-        return orderMapper.toDto(order);
+    public OrderDto findById(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        OrderDto orderDto = orderMapper.toDto(order);
+        return addUserDtoToOrderDto(orderDto,order.getUserId());;
     }
 
     @Transactional()
-    public OrderDto createOrder(OrderCreateRequestDto orderCreateRequestDto){
+    public OrderDto createOrder(OrderCreateRequestDto orderCreateRequestDto) {
         Order order = orderRepository.save(createNewOrder(orderCreateRequestDto));
-        return orderMapper.toDto(order);
+        OrderDto orderDto = orderMapper.toDto(order);
+        return addUserDtoToOrderDto(orderDto,order.getUserId());
     }
 
     private Order createNewOrder(OrderCreateRequestDto orderCreateRequestDto) {
@@ -59,58 +64,77 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderDto> findAllByUserId(Long userId){
+    public List<OrderDto> findAllByUserId(Long userId) {
         List<Order> userOrderList = orderRepository.findByUserId(userId);
-        return orderMapper.toDtoList(userOrderList);
+        List<OrderDto> orderDtos = orderMapper.toDtoList(userOrderList);
+        UserDto userDto = userServiceClient.findUserById(userId);
+        orderDtos.forEach(orderDto -> orderDto.setUser(userDto));
+        return orderDtos;
     }
 
     @Transactional
-    public void deleteById(Long orderId){
+    public void deleteById(Long orderId) {
         orderRepository.deleteById(orderId);
     }
 
     @Transactional(readOnly = true)
-    public PageDto<OrderDto> findAll(OrderFilterRequest orderFilterRequest, Pageable pageable){
-        Page<Order> dtoPage = orderRepository.findAll(orderFilterRequest.toSpecification(),pageable);
-        return orderMapper.toPageDto(dtoPage.map(orderMapper::toDto));
+    public PageDto<OrderDto> findAll(OrderFilterRequest orderFilterRequest, Pageable pageable) {
+        Page<Order> dtoPage = orderRepository.findAll(orderFilterRequest.toSpecification(), pageable);
+        return orderMapper.toPageDto(dtoPage.map(order -> {
+            OrderDto orderDto = orderMapper.toDto(order);
+            addUserDtoToOrderDto(orderDto,order.getUserId());
+            return orderDto;
+        }));
     }
 
     @Transactional(readOnly = true)
-    public PageDto<OrderDto> findAllWithAllData(OrderFilterRequest orderFilterRequest, Pageable pageable){
-        Page<Order> dtoPage = orderRepository.findAll(orderFilterRequest.toSpecification().and(OrderSpecification.withAllData()),pageable);
-        return orderMapper.toPageDto(dtoPage.map(orderMapper::toDto));
+    public PageDto<OrderDto> findAllWithAllData(OrderFilterRequest orderFilterRequest, Pageable pageable) {
+        Page<Order> dtoPage = orderRepository.findAll(orderFilterRequest.toSpecification().and(OrderSpecification.withAllData()), pageable);
+        return orderMapper.toPageDto(dtoPage.map(order -> {
+            OrderDto orderDto = orderMapper.toDto(order);
+            addUserDtoToOrderDto(orderDto,order.getUserId());
+            return orderDto;
+        }));
     }
 
     @Transactional
-    public OrderDto updateOrderById(Long orderId, OrderUpdateDto orderDto){
-        Order order = orderRepository.findById(orderId).orElseThrow(()->new OrderNotFoundException(orderId));
-        handleOrderUpdate(order,orderDto);
-        return orderMapper.toDto(orderRepository.save(order));
+    public OrderDto updateOrderById(Long orderId, OrderUpdateDto orderDto) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        handleOrderUpdate(order, orderDto);
+        OrderDto saved = orderMapper.toDto(orderRepository.save(order));
+        return addUserDtoToOrderDto(saved,order.getUserId());
     }
 
-    private void handleOrderUpdate(Order order, OrderUpdateDto orderDto){
-        if ( orderDto == null ) {
+    private void handleOrderUpdate(Order order, OrderUpdateDto orderDto) {
+        if (orderDto == null) {
             return;
         }
-        if ( orderDto.orderStatus() != null ) {
+        if (orderDto.orderStatus() != null) {
             order.setOrderStatus(OrderStatus.valueOf(orderDto.orderStatus()));
         }
-        if ( orderDto.deleted() != null ) {
-            order.setDeleted( orderDto.deleted() );
+        if (orderDto.deleted() != null) {
+            order.setDeleted(orderDto.deleted());
         }
 
-        for(var i=0;i<order.getOrderItemList().size();i++){
+        for (var i = 0; i < order.getOrderItemList().size(); i++) {
             OrderItem oldOrderItem = order.getOrderItemList().get(i);
             oldOrderItem.getItem().getOrderItemList().remove(oldOrderItem);
             oldOrderItem.setOrder(null);
             oldOrderItem.setItem(null);
             oldOrderItem.setQuantity(0);
-        };
+        }
+        ;
         order.getOrderItemList().clear();
         orderDto.orderItemList().forEach(orderItemDto -> {
-            Item item = itemRepository.findById(orderItemDto.itemId()).orElseThrow(()->new ItemNotFoundException(orderItemDto.itemId()));
-            order.addItem(item,orderItemDto.quantity());
+            Item item = itemRepository.findById(orderItemDto.itemId()).orElseThrow(() -> new ItemNotFoundException(orderItemDto.itemId()));
+            order.addItem(item, orderItemDto.quantity());
         });
         order.updateTotalPrice();
+    }
+
+    private OrderDto addUserDtoToOrderDto(OrderDto orderDto,Long userId){
+        UserDto userDto = userServiceClient.findUserById(userId);
+        orderDto.setUser(userDto);
+        return orderDto;
     }
 }

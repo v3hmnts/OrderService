@@ -1,7 +1,10 @@
 package orderService.service;
 
 import orderService.TestcontainersConfig;
-import orderService.dto.*;
+import orderService.dto.OrderDto;
+import orderService.dto.OrderItemCreateRequestDto;
+import orderService.dto.OrderUpdateDto;
+import orderService.dto.PageDto;
 import orderService.entity.Item;
 import orderService.entity.Order;
 import orderService.entity.enums.OrderStatus;
@@ -174,9 +177,9 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
 
-        OrderItemCreateRequestDto orderItemCreateRequestDto1 = new OrderItemCreateRequestDto(item1.getId(),5);
-        OrderItemCreateRequestDto orderItemCreateRequestDto2 = new OrderItemCreateRequestDto(item2.getId(),10);
-        OrderUpdateDto orderUpdateDto = new OrderUpdateDto("CONFIRMED", List.of(orderItemCreateRequestDto1,orderItemCreateRequestDto2),false);
+        OrderItemCreateRequestDto orderItemCreateRequestDto1 = new OrderItemCreateRequestDto(item1.getId(), 5);
+        OrderItemCreateRequestDto orderItemCreateRequestDto2 = new OrderItemCreateRequestDto(item2.getId(), 10);
+        OrderUpdateDto orderUpdateDto = new OrderUpdateDto("CONFIRMED", List.of(orderItemCreateRequestDto1, orderItemCreateRequestDto2), false);
 
 
         // Act
@@ -184,7 +187,7 @@ class OrderServiceTest {
 
         // Assert
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
-        assertEquals(0,result.getTotalPrice().compareTo(item1.getPrice().multiply(BigDecimal.valueOf(orderItemCreateRequestDto1.quantity())).add(item2.getPrice().multiply(BigDecimal.valueOf(orderItemCreateRequestDto2.quantity())))));
+        assertEquals(0, result.getTotalPrice().compareTo(item1.getPrice().multiply(BigDecimal.valueOf(orderItemCreateRequestDto1.quantity())).add(item2.getPrice().multiply(BigDecimal.valueOf(orderItemCreateRequestDto2.quantity())))));
         assertTrue(result.getDeleted());
 
     }
@@ -192,7 +195,7 @@ class OrderServiceTest {
     @Test
     void findByUserIdShouldReturnUserOrders() {
         // Arrange
-        final Long userId=1L;
+        final Long userId = 1L;
 
         Item item1 = new Item();
         item1.setName("Item1");

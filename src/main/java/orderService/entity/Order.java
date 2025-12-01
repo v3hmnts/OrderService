@@ -47,9 +47,9 @@ public class Order extends AuditableEntity {
 
     public void addItem(Item item, Integer quantity) {
         OrderItem newOrderItem = new OrderItem(this, item, quantity);
-        for(var orderItem : orderItemList){
-            if(orderItem.getItem().equals(item)){
-                orderItem.setQuantity(orderItem.getQuantity()+newOrderItem.getQuantity());
+        for (var orderItem : orderItemList) {
+            if (orderItem.getItem().equals(item)) {
+                orderItem.setQuantity(orderItem.getQuantity() + newOrderItem.getQuantity());
                 return;
             }
         }
@@ -64,14 +64,14 @@ public class Order extends AuditableEntity {
                 if (orderItem.getQuantity() > quantity) {
                     orderItem.setQuantity(orderItem.getQuantity() - quantity);
                     break;
-                }else if(orderItem.getQuantity().equals(quantity)){
+                } else if (orderItem.getQuantity().equals(quantity)) {
                     orderItemList.remove(orderItem);
                     orderItem.getItem().getOrderItemList().remove(orderItem);
                     orderItem.setOrder(null);
                     orderItem.setItem(null);
                     orderItem.setQuantity(0);
                     break;
-                }else{
+                } else {
                     throw new RuntimeException("Can't delete more that in order");
                 }
             }
@@ -86,7 +86,7 @@ public class Order extends AuditableEntity {
             return false;
 
         Order that = (Order) o;
-        if(this.getId()==null || that.getId()==null){
+        if (this.getId() == null || that.getId() == null) {
             return false;
         }
         return Objects.equals(this.id, that.id);
@@ -97,7 +97,7 @@ public class Order extends AuditableEntity {
         return getClass().hashCode();
     }
 
-    public void updateTotalPrice(){
+    public void updateTotalPrice() {
         this.totalPrice = this.orderItemList.stream()
                 .map(orderItem -> orderItem.getItem().getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add, BigDecimal::add);
