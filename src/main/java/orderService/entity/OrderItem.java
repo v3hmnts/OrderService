@@ -24,11 +24,11 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade =  {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
     @JoinColumn(name = "item_id")
     private Item item;
 
@@ -51,6 +51,9 @@ public class OrderItem {
             return false;
 
         OrderItem that = (OrderItem) o;
+        if(this.getId()==null || that.getId()==null){
+            return false;
+        }
         return Objects.equals(this.id, that.id);
     }
 
