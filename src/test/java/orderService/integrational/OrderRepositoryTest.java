@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -64,11 +65,11 @@ class OrderRepositoryTest {
         // Arrange
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal("10"));
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal(20));
 
         Order order = new Order();
         order.setUserId(1L);
@@ -95,11 +96,11 @@ class OrderRepositoryTest {
     void findAllWithConfirmedStatusShouldReturnOrderListWithSizeEqualsTwo() {
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal(10));
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal(20));
 
         Order order = new Order();
         order.setUserId(1L);
@@ -130,11 +131,11 @@ class OrderRepositoryTest {
     void findAllWithConfirmedStatusShouldReturnOrderListWithSizeEqualsOne() {
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal(10));
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal(20));
 
         Order order = new Order();
         order.setUserId(1L);
@@ -166,7 +167,7 @@ class OrderRepositoryTest {
     void addItemThatWasAlreadyInOrderShouldUpdateQuantity() {
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal(10));
         itemRepository.save(item1);
 
         Order order = new Order();
@@ -186,7 +187,7 @@ class OrderRepositoryTest {
 
         // Assert
         assertThat(result.getOrderItemList().size()).isEqualTo(1);
-        assertThat(result.getTotalPrice()).isEqualTo(120d);
+        assertThat(result.getTotalPrice()).isEqualTo(new BigDecimal(120));
         assertThat(result.getOrderItemList().getFirst().getQuantity()).isEqualTo(12);
 
     }
@@ -196,7 +197,7 @@ class OrderRepositoryTest {
     void removeItemFromOrderItemQunatityShouldDecrease() {
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal(10));
         Item savedItem = itemRepository.save(item1);
 
         Order order = new Order();
@@ -215,7 +216,7 @@ class OrderRepositoryTest {
 
         // Assert
         assertThat(result.getOrderItemList().size()).isEqualTo(1);
-        assertThat(result.getTotalPrice()).isEqualTo(150d);
+        assertThat(result.getTotalPrice()).isEqualTo(new BigDecimal(150));
         assertThat(result.getOrderItemList().getFirst().getQuantity()).isEqualTo(15);
 
     }
@@ -225,7 +226,7 @@ class OrderRepositoryTest {
     void removeMoreItemQuantityThanItemQunatityInOrderShouldThrowException() {
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal(10));
         Item savedItem = itemRepository.save(item1);
 
         Order order = new Order();
@@ -246,12 +247,12 @@ class OrderRepositoryTest {
     void removeUnexistentItemFromOrderShouldThrowException() {
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal(10));
         Item savedItem = itemRepository.save(item1);
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(10d);
+        item2.setPrice(new BigDecimal(10));
         Item savedItem2= itemRepository.save(item2);
 
         Order order = new Order();
@@ -268,7 +269,7 @@ class OrderRepositoryTest {
 
         // Assert
         assertThat(result.getOrderItemList().size()).isEqualTo(1);
-        assertThat(result.getTotalPrice()).isEqualTo(10d);
+        assertThat(result.getTotalPrice()).isEqualTo(new BigDecimal(10));
         assertThat(result.getOrderItemList().getFirst().getQuantity()).isEqualTo(1);
 
     }

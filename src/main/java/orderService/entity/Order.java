@@ -10,6 +10,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +36,7 @@ public class Order extends AuditableEntity {
     private OrderStatus orderStatus;
 
     @Column(columnDefinition = "NUMERIC")
-    private double totalPrice;
+    private BigDecimal totalPrice;
 
     @Column(name = "deleted")
     private boolean deleted;
@@ -95,7 +96,7 @@ public class Order extends AuditableEntity {
 
     public void updatePrice(){
         this.totalPrice = this.orderItemList.stream()
-                .map(orderItem -> orderItem.getItem().getPrice() * orderItem.getQuantity())
-                .reduce(0d, Double::sum, Double::sum);
+                .map(orderItem -> orderItem.getItem().getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add, BigDecimal::add);
     }
 }
