@@ -2,10 +2,12 @@ package orderService.service.impl;
 
 import orderService.dto.OrderCreateRequestDto;
 import orderService.dto.OrderDto;
+import orderService.dto.OrderItemCreateRequestDto;
 import orderService.dto.PageDto;
 import orderService.entity.Item;
 import orderService.entity.Order;
 import orderService.entity.OrderItem;
+import orderService.entity.enums.OrderStatus;
 import orderService.mapper.OrderMapper;
 import orderService.repository.ItemRepository;
 import orderService.repository.OrderRepository;
@@ -40,9 +42,21 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional()
     public OrderDto createOrder(OrderCreateRequestDto orderCreateRequestDto){
-        Order orderToSave = orderMapper.toEntity(orderDto);
-        Order order = orderRepository.save(orderToSave);
+        Order order = orderRepository.save(createNewOrder(orderCreateRequestDto));
         return orderMapper.toDto(order);
+    }
+
+    private Order createNewOrder(OrderCreateRequestDto orderCreateRequestDto) {
+        Order newOrder = new Order();
+        newOrder.setUserId(orderCreateRequestDto.getUserId());
+        newOrder.setOrderStatus(OrderStatus.PENDING);
+        List<OrderItemCreateRequestDto> itemCreateRequestDtos = orderCreateRequestDto.getOrderItemList();
+        for(var i=0;i<itemCreateRequestDtos.size();i++){
+            Item itemToAdd =itemRepository.findById(itemCreateRequestDtos.get(i).itemId()).orElseThrow();
+            newOrder.addItem(itemToAdd,itemCreateRequestDtos.get(i).quantity());
+        }
+        newOrder.updateTotalPrice();
+        return newOrder;
     }
 
     @Transactional(readOnly = true)
@@ -102,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
             Item item = itemRepository.findById(orderItemDto.itemDto().id()).orElseThrow();
             order.addItem(item,orderItemDto.quantity());
         });
-        order.updatePrice();
+        order.updateTotalPrice();
     }
 
 //    private Order handleOrderCreation(OrderDto orderDto){

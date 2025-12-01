@@ -3,6 +3,7 @@ package orderService.dto;
 import lombok.*;
 import orderService.entity.enums.OrderStatus;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Setter
@@ -14,7 +15,7 @@ public class OrderDto{
     private Long id;
     private UserDto user;
     private OrderStatus orderStatus;
-    private Double totalPrice;
+    private BigDecimal totalPrice;
     private Boolean deleted;
     private List<OrderItemDto> orderItemList;
 }

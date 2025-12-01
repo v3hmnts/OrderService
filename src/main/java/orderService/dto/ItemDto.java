@@ -1,9 +1,11 @@
 package orderService.dto;
 
+import java.math.BigDecimal;
+
 public record ItemDto(
         Long id,
         String name,
-        Double price,
+        BigDecimal price,
         Boolean deleted
 ) {
 }

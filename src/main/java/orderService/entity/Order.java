@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import orderService.entity.enums.OrderStatus;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -99,7 +97,7 @@ public class Order extends AuditableEntity {
         return getClass().hashCode();
     }
 
-    public void updatePrice(){
+    public void updateTotalPrice(){
         this.totalPrice = this.orderItemList.stream()
                 .map(orderItem -> orderItem.getItem().getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add, BigDecimal::add);

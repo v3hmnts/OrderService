@@ -20,11 +20,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(
@@ -55,17 +57,17 @@ class OrderServiceTest {
         // Arrange
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal("10"));
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal("20"));
 
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1, 2);
         order.addItem(item2, 1);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         Order savedOrder = orderRepository.save(order);
 
@@ -77,7 +79,7 @@ class OrderServiceTest {
         assertThat(result.getId()).isEqualTo(savedOrder.getId());
         assertThat(result.getOrderStatus()).isEqualTo(savedOrder.getOrderStatus());
         assertThat(result.getDeleted()).isEqualTo(savedOrder.isDeleted());
-        assertThat(result.getTotalPrice()).isEqualTo(savedOrder.getTotalPrice());
+        assertEquals(0, result.getTotalPrice().compareTo(savedOrder.getTotalPrice()));
         assertThat(result.getOrderItemList().size()).isEqualTo(savedOrder.getOrderItemList().size());
 
     }
@@ -87,17 +89,17 @@ class OrderServiceTest {
         // Arrange
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal("10"));
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal("20"));
 
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1, 2);
         order.addItem(item2, 1);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         Order savedOrder = orderRepository.save(order);
 
@@ -110,7 +112,7 @@ class OrderServiceTest {
         assertThat(result.getId()).isEqualTo(savedOrder.getId());
         assertTrue(result.getDeleted());
         assertThat(result.getOrderStatus()).isEqualTo(savedOrder.getOrderStatus());
-        assertThat(result.getTotalPrice()).isEqualTo(savedOrder.getTotalPrice());
+        assertEquals(0, result.getTotalPrice().compareTo(savedOrder.getTotalPrice()));
         assertThat(result.getOrderItemList().size()).isEqualTo(savedOrder.getOrderItemList().size());
 
     }
@@ -120,30 +122,30 @@ class OrderServiceTest {
         // Arrange
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal("10"));
 
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1, 2);
-        order.updatePrice();
-        order.setOrderStatus(OrderStatus.FAILED);
+        order.updateTotalPrice();
+        order.setOrderStatus(OrderStatus.CANCELED);
         Order savedOrder = orderRepository.save(order);
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal("20"));
 
         Order order2 = new Order();
         order2.setUserId(1L);
         order2.addItem(item2, 1);
-        order2.updatePrice();
+        order2.updateTotalPrice();
         order2.setOrderStatus(OrderStatus.PAYED);
         Order savedOrder2 = orderRepository.save(order2);
 
         OrderFilterRequest filterRequest = new OrderFilterRequest().toBuilder()
                 .createdBefore(LocalDateTime.now().plusHours(4).toInstant(ZoneOffset.ofHours(0)))
                 .createdAfter(LocalDateTime.now().minusHours(4).toInstant(ZoneOffset.ofHours(0)))
-                .orderStatus(OrderStatus.FAILED)
+                .orderStatus(OrderStatus.CANCELED)
                 .build();
 
         // Act
@@ -159,18 +161,18 @@ class OrderServiceTest {
         // Arrange
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal("10"));
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal("20"));
 
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1, 2);
         order.addItem(item2, 3);
-        order.updatePrice();
-        order.setOrderStatus(OrderStatus.FAILED);
+        order.updateTotalPrice();
+        order.setOrderStatus(OrderStatus.CANCELED);
         Order savedOrder = orderRepository.save(order);
 
         OrderDto updateOrderDto = orderServiceImpl.findById(savedOrder.getId());
@@ -188,7 +190,7 @@ class OrderServiceTest {
 
         // Assert
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
-        assertThat(result.getTotalPrice()).isEqualTo(item1.getPrice()*newOrderItemDto1.quantity()+item2.getPrice()*newOrderItemDto2.quantity());
+        assertEquals(0,result.getTotalPrice().compareTo(item1.getPrice().multiply(BigDecimal.valueOf(newOrderItemDto1.quantity())).add(item2.getPrice().multiply(BigDecimal.valueOf(newOrderItemDto2.quantity())))));
         assertTrue(result.getDeleted());
 
     }
@@ -200,34 +202,34 @@ class OrderServiceTest {
 
         Item item1 = new Item();
         item1.setName("Item1");
-        item1.setPrice(10d);
+        item1.setPrice(new BigDecimal("10"));
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal("20"));
 
         Order order = new Order();
         order.setUserId(userId);
         order.addItem(item1, 2);
-        order.updatePrice();
-        order.setOrderStatus(OrderStatus.FAILED);
+        order.updateTotalPrice();
+        order.setOrderStatus(OrderStatus.CANCELED);
         Order savedOrder = orderRepository.save(order);
 
         Item item3 = new Item();
         item3.setName("Item3");
-        item3.setPrice(40d);
+        item3.setPrice(new BigDecimal("40"));
 
         Order order2 = new Order();
         order2.setUserId(userId);
         order2.addItem(item2, 1);
-        order2.updatePrice();
+        order2.updateTotalPrice();
         order2.setOrderStatus(OrderStatus.PAYED);
         Order savedOrder2 = orderRepository.save(order2);
 
         Order order3 = new Order();
         order3.setUserId(userId);
         order3.addItem(item3, 10);
-        order3.updatePrice();
+        order3.updateTotalPrice();
         order3.setOrderStatus(OrderStatus.CONFIRMED);
         Order savedOrder3 = orderRepository.save(order3);
 

@@ -75,7 +75,7 @@ class OrderRepositoryTest {
         order.setUserId(1L);
         order.addItem(item1,2);
         order.addItem(item2,1);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
 
         // Act
@@ -105,7 +105,7 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1,2);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
@@ -113,7 +113,7 @@ class OrderRepositoryTest {
         Order order2 = new Order();
         order2.setUserId(2L);
         order2.addItem(item2,2);
-        order2.updatePrice();
+        order2.updateTotalPrice();
         order2.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order2);
 
@@ -140,7 +140,7 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1,2);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
@@ -148,8 +148,8 @@ class OrderRepositoryTest {
         Order order2 = new Order();
         order2.setUserId(2L);
         order2.addItem(item2,2);
-        order2.updatePrice();
-        order2.setOrderStatus(OrderStatus.FAILED);
+        order2.updateTotalPrice();
+        order2.setOrderStatus(OrderStatus.CANCELED);
         orderRepository.save(order2);
 
         Specification<Order> orderSpecification = OrderSpecification.hasStatus(OrderStatus.CONFIRMED);
@@ -173,12 +173,12 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1,2);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
         order.addItem(item1,10);
-        order.updatePrice();
+        order.updateTotalPrice();
         orderRepository.save(order);
 
 
@@ -203,12 +203,12 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1,20);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
         order.removeItem(item1,5);
-        order.updatePrice();
+        order.updateTotalPrice();
 
 
         // Act
@@ -232,7 +232,7 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1,1);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
@@ -258,11 +258,11 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setUserId(1L);
         order.addItem(item1,1);
-        order.updatePrice();
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
         order.removeItem(savedItem2,5);
-        order.updatePrice();
+        order.updateTotalPrice();
 
         // Act
         Order result = orderRepository.findById(order.getId()).orElseThrow();

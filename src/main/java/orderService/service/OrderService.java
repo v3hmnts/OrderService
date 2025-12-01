@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface OrderService {
 
-    OrderDto findById(Long orderId);
-    void deleteById(Long orderId);
-    List<OrderDto> findAllByUserId(Long userId);
-    OrderDto createOrder(OrderCreateRequestDto orderCreateRequestDto);
-    PageDto<OrderDto> findAll(OrderFilterRequest orderFilterRequest, Pageable pageable);
-    OrderDto updateOrderById(Long orderId,OrderDto orderDto);
+    public OrderDto findById(Long orderId);
+    public void deleteById(Long orderId);
+    public List<OrderDto> findAllByUserId(Long userId);
+    public OrderDto createOrder(OrderCreateRequestDto orderCreateRequestDto);
+    public PageDto<OrderDto> findAll(OrderFilterRequest orderFilterRequest, Pageable pageable);
+    public OrderDto updateOrderById(Long orderId,OrderDto orderDto);
 
 }
