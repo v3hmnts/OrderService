@@ -30,8 +30,8 @@ public class UserServiceRestClientImpl implements UserServiceClient {
     @Override
     @CircuitBreaker(name = "user-service")
     public UserDto findUserById(Long userId) {
-        String tokenValue = requestContext.getTokenValue();
 
+        String tokenValue = requestContext.getTokenValue();
         if (tokenValue == null) {
             throw new AccessDeniedException("No authentication token available");
         }
@@ -42,7 +42,7 @@ public class UserServiceRestClientImpl implements UserServiceClient {
                 .header("Authorization", "Bearer " + tokenValue)
                 .retrieve()
                 .onStatus((httpStatusCode -> httpStatusCode.isSameCodeAs(HttpStatusCode.valueOf(403))), (request, response) -> {
-                    logger.warn("Access denied for user {} to resource {}", extractUserIdFromJwtToken(jwtAuthenticationToken), userId);
+                    logger.warn("Access denied for user {} to resource {}", requestContext.getUserId(), userId);
                     throw new AccessDeniedException("User does not have permission to access this resource");
                 })
                 .onStatus((httpStatusCode -> httpStatusCode.isSameCodeAs(HttpStatusCode.valueOf(404))), (request, response) -> {
@@ -59,11 +59,4 @@ public class UserServiceRestClientImpl implements UserServiceClient {
 
     }
 
-    private Long extractUserIdFromJwtToken(JwtAuthenticationToken jwtAuthenticationToken) {
-        String userIdStringRepresentation = jwtAuthenticationToken.getToken().getClaimAsString("userId");
-        if (userIdStringRepresentation == null) {
-            throw new RuntimeException();
-        }
-        return Long.valueOf(userIdStringRepresentation);
-    }
 }
