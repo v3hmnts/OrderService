@@ -10,6 +10,7 @@ import orderService.mapper.ItemMapper;
 import orderService.repository.ItemRepository;
 import orderService.service.ItemService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public ItemDto createItem(ItemCreateRequestDto itemCreateRequestDto) {
         Item item = itemMapper.toEntity(itemCreateRequestDto);
         return itemMapper.toDto(itemRepository.save(item));
@@ -33,6 +35,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
     public ItemDto findById(Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         return itemMapper.toDto(item);
@@ -40,6 +43,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public ItemDto updateItemById(Long itemId, ItemUpdateDto itemUpdateDto) {
         Item itemToUpdate = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
         itemMapper.updateFromDto(itemUpdateDto, itemToUpdate);
@@ -48,12 +52,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteItemById(Long itemId) {
         itemRepository.deleteById(itemId);
     }
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
     public PageDto<ItemDto> findAll(Pageable pageable) {
         return itemMapper.toPageDto(itemRepository.findAll(pageable).map(itemMapper::toDto));
     }
