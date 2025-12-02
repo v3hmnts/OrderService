@@ -53,6 +53,7 @@ public class OrderController {
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<Void> deleteById(@PathVariable Long orderId){
+        orderService.deleteById(orderId);
         return ResponseEntity.noContent().build();
     }
 

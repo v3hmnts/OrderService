@@ -36,12 +36,12 @@ public class ItemController {
         return ResponseEntity.ok(itemService.findAll(pageable));
     }
 
-    @PutMapping
+    @PutMapping("/{itemId}")
     public ResponseEntity<ItemDto> updateItemById(@PathVariable Long itemId, @Valid @RequestBody ItemUpdateDto itemUpdateDto){
         return ResponseEntity.ok(itemService.updateItemById(itemId,itemUpdateDto));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{itemId}")
     public ResponseEntity<Void> deleteItemById(@PathVariable Long itemId){
         itemService.deleteItemById(itemId);
         return ResponseEntity.noContent().build();

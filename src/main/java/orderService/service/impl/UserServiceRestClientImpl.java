@@ -37,7 +37,7 @@ public class UserServiceRestClientImpl implements UserServiceClient {
         }
         String USER_BY_ID_RELATIVE_API_URI = "api/v1/users/{userId}";
         return userServiceRestClient
-                .post()
+                .get()
                 .uri(USER_BY_ID_RELATIVE_API_URI, userId)
                 .header("Authorization", "Bearer " + tokenValue)
                 .retrieve()

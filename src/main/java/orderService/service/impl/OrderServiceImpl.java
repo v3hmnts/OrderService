@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @securityService.isResourceOwner('User',#orderCreateRequestDto.userId,authentication))")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @securityService.isResourceOwner('User',#userId,authentication))")
     public List<OrderDto> findAllByUserId(Long userId) {
         List<Order> userOrderList = orderRepository.findByUserId(userId);
         List<OrderDto> orderDtos = orderMapper.toDtoList(userOrderList);
