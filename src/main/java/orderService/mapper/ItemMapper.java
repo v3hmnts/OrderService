@@ -23,7 +23,8 @@ public interface ItemMapper {
     @Mapping(target = "id", ignore = true)
     Item toEntity(ItemCreateRequestDto itemCreateRequestDto);
 
-    @Mapping(source = "number", target = "size")
+    @Mapping(source = "number",target = "pageNumber")
+    @Mapping(source = "size",target = "pageSize")
     PageDto<ItemDto> toPageDto(Page<ItemDto> itemDtoPage);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

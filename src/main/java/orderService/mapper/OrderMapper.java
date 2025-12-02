@@ -20,7 +20,8 @@ public interface OrderMapper {
 
     List<OrderDto> toDtoList(List<Order> orders);
 
-    @Mapping(source = "number", target = "size")
+    @Mapping(source = "number",target = "pageNumber")
+    @Mapping(source = "size",target = "pageSize")
     PageDto<OrderDto> toPageDto(Page<OrderDto> page);
 
 }

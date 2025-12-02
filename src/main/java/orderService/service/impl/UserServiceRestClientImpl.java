@@ -53,6 +53,7 @@ public class UserServiceRestClientImpl implements UserServiceClient {
                     throw new BadRequestException("Invalid request: " + response.getStatusText());
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    logger.warn(response.getStatusText());
                     throw new ServiceUnavailableException("User service is temporarily unavailable. Please try again later.");
                 })
                 .body(UserDto.class);
