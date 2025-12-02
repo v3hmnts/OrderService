@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE order_items SET deleted = true WHERE id=?")
+@SQLRestriction("deleted = false")
 public class OrderItem {
 
     @Id

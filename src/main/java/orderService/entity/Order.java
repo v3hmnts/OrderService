@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import orderService.entity.enums.OrderStatus;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE orders SET deleted = true WHERE id=?")
+@SQLRestriction("deleted = false")
 public class Order extends AuditableEntity {
 
     @Id
