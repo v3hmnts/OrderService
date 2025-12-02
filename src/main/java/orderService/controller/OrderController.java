@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import orderService.dto.OrderCreateRequestDto;
 import orderService.dto.OrderDto;
-import orderService.dto.OrderUpdateDto;
+import orderService.dto.OrderUpdateRequestDto;
 import orderService.dto.PageDto;
 import orderService.service.OrderService;
 import orderService.specification.OrderFilterRequest;
@@ -33,8 +33,8 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<OrderDto> updateOrder(@PathVariable Long orderId, @NotNull @Valid @RequestBody OrderUpdateDto orderUpdateDto){
-        return ResponseEntity.ok(orderService.updateOrderById(orderId,orderUpdateDto));
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable Long orderId, @NotNull @Valid @RequestBody OrderUpdateRequestDto orderUpdateRequestDto){
+        return ResponseEntity.ok(orderService.updateOrderById(orderId, orderUpdateRequestDto));
     }
 
     @GetMapping("/{orderId}")

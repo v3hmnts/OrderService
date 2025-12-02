@@ -3,7 +3,7 @@ package orderService.service;
 import orderService.TestcontainersConfig;
 import orderService.dto.OrderDto;
 import orderService.dto.OrderItemCreateRequestDto;
-import orderService.dto.OrderUpdateDto;
+import orderService.dto.OrderUpdateRequestDto;
 import orderService.dto.PageDto;
 import orderService.entity.Item;
 import orderService.entity.Order;
@@ -179,11 +179,11 @@ class OrderServiceTest {
 
         OrderItemCreateRequestDto orderItemCreateRequestDto1 = new OrderItemCreateRequestDto(item1.getId(), 5);
         OrderItemCreateRequestDto orderItemCreateRequestDto2 = new OrderItemCreateRequestDto(item2.getId(), 10);
-        OrderUpdateDto orderUpdateDto = new OrderUpdateDto("CONFIRMED", List.of(orderItemCreateRequestDto1, orderItemCreateRequestDto2), false);
+        OrderUpdateRequestDto orderUpdateRequestDto = new OrderUpdateRequestDto("CONFIRMED", List.of(orderItemCreateRequestDto1, orderItemCreateRequestDto2), false);
 
 
         // Act
-        OrderDto result = orderServiceImpl.updateOrderById(savedOrder.getId(), orderUpdateDto);
+        OrderDto result = orderServiceImpl.updateOrderById(savedOrder.getId(), orderUpdateRequestDto);
 
         // Assert
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
