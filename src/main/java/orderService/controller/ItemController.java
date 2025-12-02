@@ -1,6 +1,7 @@
 package orderService.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import orderService.dto.ItemCreateRequestDto;
 import orderService.dto.ItemDto;
 import orderService.dto.ItemUpdateDto;
@@ -9,6 +10,7 @@ import orderService.service.ItemService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +24,8 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemDto> createNewItem(@Valid @RequestBody ItemCreateRequestDto itemCreateRequestDto){
-        return ResponseEntity.ok(itemService.createItem(itemCreateRequestDto));
+    public ResponseEntity<ItemDto> createNewItem(@NotNull  @Valid @RequestBody ItemCreateRequestDto itemCreateRequestDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.createItem(itemCreateRequestDto));
     }
 
     @GetMapping("/{itemId}")
@@ -37,7 +39,7 @@ public class ItemController {
     }
 
     @PutMapping("/{itemId}")
-    public ResponseEntity<ItemDto> updateItemById(@PathVariable Long itemId, @Valid @RequestBody ItemUpdateDto itemUpdateDto){
+    public ResponseEntity<ItemDto> updateItemById(@PathVariable Long itemId, @NotNull @Valid @RequestBody ItemUpdateDto itemUpdateDto){
         return ResponseEntity.ok(itemService.updateItemById(itemId,itemUpdateDto));
     }
 

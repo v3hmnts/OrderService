@@ -1,5 +1,6 @@
 package orderService.specification;
 
+import jakarta.validation.constraints.Past;
 import lombok.*;
 import orderService.entity.Order;
 import orderService.entity.enums.OrderStatus;
@@ -15,8 +16,13 @@ import java.util.List;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class OrderFilterRequest {
+
+    @Past
     private Instant createdBefore;
+
+    @Past
     private Instant createdAfter;
+
     private OrderStatus orderStatus;
 
     public Specification<Order> toSpecification() {

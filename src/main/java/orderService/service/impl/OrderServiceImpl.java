@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setOrderStatus(OrderStatus.PENDING);
         List<OrderItemCreateRequestDto> itemCreateRequestDtos = orderCreateRequestDto.getOrderItemList();
         for (OrderItemCreateRequestDto itemCreateRequestDto : itemCreateRequestDtos) {
-            Item itemToAdd = itemRepository.findById(itemCreateRequestDto.itemId()).orElseThrow();
+            Item itemToAdd = itemRepository.findById(itemCreateRequestDto.itemId()).orElseThrow(()->new ItemNotFoundException(itemCreateRequestDto.itemId()));
             newOrder.addItem(itemToAdd, itemCreateRequestDto.quantity());
         }
         newOrder.updateTotalPrice();
