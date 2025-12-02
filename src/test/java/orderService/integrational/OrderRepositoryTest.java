@@ -65,7 +65,7 @@ class OrderRepositoryTest {
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(20d);
+        item2.setPrice(new BigDecimal("20"));
 
         Order order = new Order();
         order.setUserId(1L);
