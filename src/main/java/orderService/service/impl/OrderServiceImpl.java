@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto findById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
         OrderDto orderDto = orderMapper.toDto(order);
-        return addUserDtoToOrderDto(orderDto,order.getUserId());
+        return addUserDtoToOrderDto(orderDto, order.getUserId());
     }
 
     @Transactional()
@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto createOrder(OrderCreateRequestDto orderCreateRequestDto) {
         Order order = orderRepository.save(createNewOrder(orderCreateRequestDto));
         OrderDto orderDto = orderMapper.toDto(order);
-        return addUserDtoToOrderDto(orderDto,order.getUserId());
+        return addUserDtoToOrderDto(orderDto, order.getUserId());
     }
 
     private Order createNewOrder(OrderCreateRequestDto orderCreateRequestDto) {
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setOrderStatus(OrderStatus.PENDING);
         List<OrderItemCreateRequestDto> itemCreateRequestDtos = orderCreateRequestDto.getOrderItemList();
         for (OrderItemCreateRequestDto itemCreateRequestDto : itemCreateRequestDtos) {
-            Item itemToAdd = itemRepository.findById(itemCreateRequestDto.itemId()).orElseThrow(()->new ItemNotFoundException(itemCreateRequestDto.itemId()));
+            Item itemToAdd = itemRepository.findById(itemCreateRequestDto.itemId()).orElseThrow(() -> new ItemNotFoundException(itemCreateRequestDto.itemId()));
             newOrder.addItem(itemToAdd, itemCreateRequestDto.quantity());
         }
         newOrder.updateTotalPrice();
@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> dtoPage = orderRepository.findAll(orderFilterRequest.toSpecification(), pageable);
         return orderMapper.toPageDto(dtoPage.map(order -> {
             OrderDto orderDto = orderMapper.toDto(order);
-            addUserDtoToOrderDto(orderDto,order.getUserId());
+            addUserDtoToOrderDto(orderDto, order.getUserId());
             return orderDto;
         }));
     }
@@ -100,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> dtoPage = orderRepository.findAll(orderFilterRequest.toSpecification().and(OrderSpecification.withAllData()), pageable);
         return orderMapper.toPageDto(dtoPage.map(order -> {
             OrderDto orderDto = orderMapper.toDto(order);
-            addUserDtoToOrderDto(orderDto,order.getUserId());
+            addUserDtoToOrderDto(orderDto, order.getUserId());
             return orderDto;
         }));
     }
@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
         handleOrderUpdate(order, orderDto);
         OrderDto orderDtoToReturn = orderMapper.toDto(order);
-        return addUserDtoToOrderDto(orderDtoToReturn,order.getUserId());
+        return addUserDtoToOrderDto(orderDtoToReturn, order.getUserId());
     }
 
     private void handleOrderUpdate(Order order, OrderUpdateRequestDto orderDto) {
@@ -132,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
             oldOrderItem.setItem(null);
         }
         order.getOrderItemList().clear();
-        if(orderDto.orderItemList() !=null && !orderDto.orderItemList().isEmpty()){
+        if (orderDto.orderItemList() != null && !orderDto.orderItemList().isEmpty()) {
             orderDto.orderItemList().forEach(orderItemDto -> {
                 Item item = itemRepository.findById(orderItemDto.itemId()).orElseThrow(() -> new ItemNotFoundException(orderItemDto.itemId()));
                 order.addItem(item, orderItemDto.quantity());
@@ -141,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
         order.updateTotalPrice();
     }
 
-    private OrderDto addUserDtoToOrderDto(OrderDto orderDto,Long userId){
+    private OrderDto addUserDtoToOrderDto(OrderDto orderDto, Long userId) {
         UserDto userDto = userServiceClient.findUserById(userId);
         orderDto.setUser(userDto);
         return orderDto;

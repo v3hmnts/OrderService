@@ -24,27 +24,27 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemDto> createNewItem(@NotNull  @Valid @RequestBody ItemCreateRequestDto itemCreateRequestDto){
+    public ResponseEntity<ItemDto> createNewItem(@NotNull @Valid @RequestBody ItemCreateRequestDto itemCreateRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.createItem(itemCreateRequestDto));
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemDto> findItemById(@PathVariable Long itemId){
+    public ResponseEntity<ItemDto> findItemById(@PathVariable Long itemId) {
         return ResponseEntity.ok(itemService.findById(itemId));
     }
 
     @GetMapping()
-    public ResponseEntity<PageDto<ItemDto>> findAll(@PageableDefault(size = 2, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+    public ResponseEntity<PageDto<ItemDto>> findAll(@PageableDefault(size = 2, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(itemService.findAll(pageable));
     }
 
     @PutMapping("/{itemId}")
-    public ResponseEntity<ItemDto> updateItemById(@PathVariable Long itemId, @NotNull @Valid @RequestBody ItemUpdateDto itemUpdateDto){
-        return ResponseEntity.ok(itemService.updateItemById(itemId,itemUpdateDto));
+    public ResponseEntity<ItemDto> updateItemById(@PathVariable Long itemId, @NotNull @Valid @RequestBody ItemUpdateDto itemUpdateDto) {
+        return ResponseEntity.ok(itemService.updateItemById(itemId, itemUpdateDto));
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<Void> deleteItemById(@PathVariable Long itemId){
+    public ResponseEntity<Void> deleteItemById(@PathVariable Long itemId) {
         itemService.deleteItemById(itemId);
         return ResponseEntity.noContent().build();
     }

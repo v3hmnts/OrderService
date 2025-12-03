@@ -1,15 +1,11 @@
 package orderService.service;
 
-import orderService.entity.Item;
 import orderService.entity.Order;
 import orderService.exception.OrderNotFoundException;
 import orderService.repository.ItemRepository;
 import orderService.repository.OrderRepository;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SecurityService {
@@ -20,13 +16,13 @@ public class SecurityService {
         this.orderRepository = orderRepository;
     }
 
-    public boolean isResourceOwner(String resourceName, Long resourceId, JwtAuthenticationToken token){
+    public boolean isResourceOwner(String resourceName, Long resourceId, JwtAuthenticationToken token) {
         Long userIdFromToken = Long.valueOf(token.getToken().getClaimAsString("userId"));
-        if (resourceName.equals("User")){
+        if (resourceName.equals("User")) {
             return resourceId.equals(userIdFromToken);
         }
-        if (resourceName.equals("Order")){
-            Order order = orderRepository.findById(resourceId).orElseThrow(()->new OrderNotFoundException(resourceId));
+        if (resourceName.equals("Order")) {
+            Order order = orderRepository.findById(resourceId).orElseThrow(() -> new OrderNotFoundException(resourceId));
             return order.getUserId().equals(userIdFromToken);
         }
         return false;
