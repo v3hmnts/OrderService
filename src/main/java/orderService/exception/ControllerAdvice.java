@@ -3,11 +3,14 @@ package orderService.exception;
 import orderService.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +52,31 @@ public class ControllerAdvice {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
+
+        List<String> errors = new ArrayList<>();
+
+        ex.getParameterValidationResults().forEach(parameterResult -> {
+            String parameterName = parameterResult.getMethodParameter().getParameterName();
+
+            parameterResult.getResolvableErrors().forEach(error -> {
+                errors.add(String.format("%s:%s", parameterName, error.getDefaultMessage()));
+            });
+        });
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                Instant.now(),
+                "Validation failed",
+                HttpStatus.BAD_REQUEST,
+                errors
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
         List<String> errors = ex.getBindingResult()

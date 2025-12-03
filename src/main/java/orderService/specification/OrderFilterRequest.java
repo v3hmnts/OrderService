@@ -17,7 +17,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class OrderFilterRequest {
 
-    @Past
+
     private Instant createdBefore;
 
     @Past

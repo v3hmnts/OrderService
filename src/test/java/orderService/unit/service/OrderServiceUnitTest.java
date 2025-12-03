@@ -1,4 +1,4 @@
-package orderService.service.unit;
+package orderService.unit.service;
 
 import orderService.dto.*;
 import orderService.entity.Item;
@@ -13,6 +13,7 @@ import orderService.repository.OrderRepository;
 import orderService.service.UserServiceClient;
 import orderService.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -30,7 +33,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceImplTest {
+@DisplayName("[unit] OrderService")
+class OrderServiceUnitTest {
 
     @Mock
     private OrderMapper orderMapper;
@@ -59,7 +63,7 @@ class OrderServiceImplTest {
         item.setName("Test Item");
         item.setPrice(new BigDecimal("99.99"));
 
-        userDto = new UserDto(1L,"User","Surname", Date.valueOf("1990-07-08"),"test@example.com",false);
+        userDto = new UserDto(1L, "User", "Surname", Date.valueOf("1990-07-08"), "test@example.com", false);
 
         OrderItem orderItem = new OrderItem();
         orderItem.setId(1L);
@@ -70,7 +74,7 @@ class OrderServiceImplTest {
         order.setId(1L);
         order.setUserId(1L);
         order.setOrderStatus(OrderStatus.PENDING);
-        order.addItem(item,2);
+        order.addItem(item, 2);
         order.updateTotalPrice();
 
         orderDto = OrderDto.builder()

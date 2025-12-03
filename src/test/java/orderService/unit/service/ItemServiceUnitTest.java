@@ -1,4 +1,4 @@
-package orderService.service.unit;
+package orderService.unit.service;
 
 import orderService.dto.ItemCreateRequestDto;
 import orderService.dto.ItemDto;
@@ -17,42 +17,36 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class ItemServiceImplTest {
-
-    @Mock
-    private ItemRepository itemRepository;
-
-    @Mock
-    private ItemMapper itemMapper;
-
-    @InjectMocks
-    private ItemServiceImpl itemService;
+@DisplayName("[unit] ItemService")
+class ItemServiceUnitTest {
 
     private final Long ITEM_ID = 1L;
     private final String ITEM_NAME = "Test Item";
     private final BigDecimal ITEM_PRICE = new BigDecimal("19.99");
     private final Boolean DELETED_FLAG = false;
-
+    @Mock
+    private ItemRepository itemRepository;
+    @Mock
+    private ItemMapper itemMapper;
+    @InjectMocks
+    private ItemServiceImpl itemService;
     private Item item;
     private ItemDto itemDto;
     private ItemCreateRequestDto createRequestDto;
@@ -60,7 +54,7 @@ class ItemServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        item = new Item(ITEM_ID,ITEM_NAME,ITEM_PRICE,null,DELETED_FLAG);
+        item = new Item(ITEM_ID, ITEM_NAME, ITEM_PRICE, null, DELETED_FLAG);
         itemDto = new ItemDto(ITEM_ID, ITEM_NAME, ITEM_PRICE, DELETED_FLAG);
         createRequestDto = new ItemCreateRequestDto(ITEM_NAME, ITEM_PRICE);
         updateDto = new ItemUpdateDto("Updated Item", new BigDecimal("29.99"), false);
@@ -184,7 +178,7 @@ class ItemServiceImplTest {
         @DisplayName("Should update item successfully")
         void shouldUpdateItemSuccessfully() {
             // Arrange
-            Item updatedItem = new Item(ITEM_ID,"Updated Item",new BigDecimal("29.99"),null,false);
+            Item updatedItem = new Item(ITEM_ID, "Updated Item", new BigDecimal("29.99"), null, false);
 
             ItemDto updatedItemDto = new ItemDto(ITEM_ID, "Updated Item", new BigDecimal("29.99"), false);
 
