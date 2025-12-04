@@ -37,7 +37,6 @@ import static org.mockito.Mockito.times;
 @DisplayName("[unit] ItemService")
 class ItemServiceUnitTest {
 
-
     private final Long ITEM_ID = 1L;
     private final String ITEM_NAME = "Test Item";
     private final BigDecimal ITEM_PRICE = new BigDecimal("19.99");
