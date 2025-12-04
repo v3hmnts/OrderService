@@ -97,7 +97,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse(Instant.now(), ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
+        ErrorResponse errorResponse = new ErrorResponse(Instant.now(), "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR, null);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
