@@ -4,7 +4,6 @@ package orderService.integrational.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import orderService.TestcontainersConfig;
-import orderService.config.TestConfig;
 import orderService.dto.*;
 import orderService.entity.enums.OrderStatus;
 import orderService.repository.OrderRepository;
@@ -45,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@Import({TestcontainersConfig.class, TestConfig.class})
+@Import({TestcontainersConfig.class})
 @EnableWireMock({
         @ConfigureWireMock(
                 name = "localhost",
