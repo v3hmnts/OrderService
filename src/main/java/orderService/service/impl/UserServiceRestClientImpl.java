@@ -11,16 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 @Service
 public class UserServiceRestClientImpl implements UserServiceClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceRestClientImpl.class);
     private final RestClient userServiceRestClient;
     private final RequestContext requestContext;
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceRestClientImpl.class);
 
     public UserServiceRestClientImpl(RestClient userServiceRestClient, RequestContext requestContext) {
         this.userServiceRestClient = userServiceRestClient;

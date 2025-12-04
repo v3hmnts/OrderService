@@ -13,12 +13,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
+@Validated
 public class OrderController {
 
     private final OrderService orderService;
@@ -28,32 +30,32 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> createNewOrder(@NotNull @Valid @RequestBody OrderCreateRequestDto orderCreateRequestDto){
-            return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(orderCreateRequestDto));
+    public ResponseEntity<OrderDto> createNewOrder(@NotNull @Valid @RequestBody OrderCreateRequestDto orderCreateRequestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(orderCreateRequestDto));
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<OrderDto> updateOrder(@PathVariable Long orderId, @NotNull @Valid @RequestBody OrderUpdateRequestDto orderUpdateRequestDto){
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable Long orderId, @NotNull @Valid @RequestBody OrderUpdateRequestDto orderUpdateRequestDto) {
         return ResponseEntity.ok(orderService.updateOrderById(orderId, orderUpdateRequestDto));
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderDto> findOrderById(@PathVariable Long orderId){
+    public ResponseEntity<OrderDto> findOrderById(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.findById(orderId));
     }
 
     @GetMapping()
-    public ResponseEntity<PageDto<OrderDto>> findAllWithAllData(@ModelAttribute @Valid OrderFilterRequest orderFilterRequest, @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
-        return ResponseEntity.ok(orderService.findAllWithAllData(orderFilterRequest,pageable));
+    public ResponseEntity<PageDto<OrderDto>> findAllWithAllData(@ModelAttribute @Valid OrderFilterRequest orderFilterRequest, @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(orderService.findAllWithAllData(orderFilterRequest, pageable));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderDto>> findAllByUserId(@PathVariable Long userId){
+    public ResponseEntity<List<OrderDto>> findAllByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(orderService.findAllByUserId(userId));
     }
 
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<Void> deleteOrderById(@PathVariable Long orderId){
+    public ResponseEntity<Void> deleteOrderById(@PathVariable Long orderId) {
         orderService.deleteById(orderId);
         return ResponseEntity.noContent().build();
     }
