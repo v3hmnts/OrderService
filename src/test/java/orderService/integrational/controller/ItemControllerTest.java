@@ -8,6 +8,7 @@ import orderService.config.TestConfig;
 import orderService.dto.*;
 import orderService.repository.ItemRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,6 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 })
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@DisplayName("[integration] ItemController")
 public class ItemControllerTest {
     private final Long DEFAULT_USER_ID = 1L;
     private final String DEFAULT_USER_NAME = "Nam";

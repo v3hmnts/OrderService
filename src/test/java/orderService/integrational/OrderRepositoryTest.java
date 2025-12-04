@@ -13,12 +13,14 @@ import orderService.repository.OrderRepository;
 import orderService.specification.OrderSpecification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
 import org.testcontainers.containers.PostgreSQLContainer;
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @Import(TestcontainersConfig.class)
+@DisplayName("[integration] OrderRepository")
 class OrderRepositoryTest {
 
     @Autowired
@@ -43,13 +46,13 @@ class OrderRepositoryTest {
     private OrderItemRepository orderItemRepository;
 
     @AfterEach
-    void afterEach() {
+    void afterEach(){
 
     }
 
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach(){
         orderRepository.deleteAll();
         itemRepository.deleteAll();
         orderItemRepository.deleteAll();
@@ -64,7 +67,7 @@ class OrderRepositoryTest {
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(new BigDecimal(20));
+        item2.setPrice(new BigDecimal("20"));
 
         Order order = new Order();
         order.setUserId(1L);

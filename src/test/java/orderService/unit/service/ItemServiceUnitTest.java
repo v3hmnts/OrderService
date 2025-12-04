@@ -34,7 +34,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
+<<<<<<<< HEAD:src/test/java/orderService/unit/service/ItemServiceImplTest.java
 class ItemServiceImplTest {
+========
+@DisplayName("[unit] ItemService")
+class ItemServiceUnitTest {
+>>>>>>>> feat/tests:src/test/java/orderService/unit/service/ItemServiceUnitTest.java
 
     private final Long ITEM_ID = 1L;
     private final String ITEM_NAME = "Test Item";

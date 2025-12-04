@@ -9,6 +9,7 @@ import orderService.dto.*;
 import orderService.entity.enums.OrderStatus;
 import orderService.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -52,6 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 })
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@DisplayName("[integration] OrderController")
 public class OrderControllerTest {
 
     private final Long DEFAULT_USER_ID = 1L;

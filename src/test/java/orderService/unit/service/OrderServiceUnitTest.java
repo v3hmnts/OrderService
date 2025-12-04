@@ -13,6 +13,7 @@ import orderService.repository.OrderRepository;
 import orderService.service.UserServiceClient;
 import orderService.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +33,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceImplTest {
+@DisplayName("[unit] OrderService")
+class OrderServiceUnitTest {
 
     @Mock
     private OrderMapper orderMapper;
