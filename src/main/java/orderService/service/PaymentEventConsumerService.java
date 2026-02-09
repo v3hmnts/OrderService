@@ -28,22 +28,22 @@ public class PaymentEventConsumerService {
             groupId = "order-service-group"
     )
     @Transactional
-    public void handlePaymentEvent(@Payload PaymentEvent paymentEvent, Acknowledgment acknowledgment){
+    public void handlePaymentEvent(@Payload PaymentEvent paymentEvent, Acknowledgment acknowledgment) {
         System.out.println("RECEIVED EVENT");
-        Order orderToEdit = orderRepository.findById(paymentEvent.getOrderId()).orElseThrow(()->new OrderNotFoundException(paymentEvent.getOrderId()));
-        switch (paymentEvent.getStatus()){
+        Order orderToEdit = orderRepository.findById(paymentEvent.getOrderId()).orElseThrow(() -> new OrderNotFoundException(paymentEvent.getOrderId()));
+        switch (paymentEvent.getStatus()) {
             case FAILED -> {
                 log.info("Payment for order with id {} failed", orderToEdit.getId());
                 orderToEdit.setOrderStatus(OrderStatus.CANCELED);
                 break;
             }
             case SUCCESS -> {
-                if((paymentEvent.getPaymentAmount().compareTo(orderToEdit.getTotalPrice()) == 0)){
+                if ((paymentEvent.getPaymentAmount().compareTo(orderToEdit.getTotalPrice()) == 0)) {
                     log.info("Payment for order with id {} succeed", orderToEdit.getId());
                     orderToEdit.setOrderStatus(OrderStatus.PAYED);
                     break;
                 }
-                log.info("Payment for order with id {} succeed, but payment amount {} lower than totalPrice {}", orderToEdit.getId(),paymentEvent.getPaymentAmount(),orderToEdit.getTotalPrice());
+                log.info("Payment for order with id {} succeed, but payment amount {} lower than totalPrice {}", orderToEdit.getId(), paymentEvent.getPaymentAmount(), orderToEdit.getTotalPrice());
                 break;
             }
         }
