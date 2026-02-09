@@ -1,14 +1,20 @@
 package orderService.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class PageDto<T> {
     private List<T> content;
-    private int page;
-    private int size;
+    private int pageNumber;
+    private int pageSize;
     private long totalElements;
     private int totalPages;
 }
