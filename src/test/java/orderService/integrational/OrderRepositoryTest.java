@@ -13,6 +13,7 @@ import orderService.repository.OrderRepository;
 import orderService.specification.OrderSpecification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,20 +33,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @Import(TestcontainersConfig.class)
+@DisplayName("[integration] OrderRepository")
 class OrderRepositoryTest {
 
     @Autowired
+    protected PostgreSQLContainer<?> postgreSQLContainer;
+    @Autowired
     private OrderRepository orderRepository;
-
     @Autowired
     private ItemRepository itemRepository;
-
     @Autowired
     private OrderItemRepository orderItemRepository;
-
-    @Autowired
-    protected PostgreSQLContainer<?> postgreSQLContainer;
-
 
     @AfterEach
     void afterEach(){
@@ -61,7 +59,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void addOrderShouldReturnOrder(){
+    void addOrderShouldReturnOrder() {
         // Arrange
         Item item1 = new Item();
         item1.setName("Item1");
@@ -69,13 +67,13 @@ class OrderRepositoryTest {
 
         Item item2 = new Item();
         item2.setName("Item2");
-        item2.setPrice(new BigDecimal(20));
+        item2.setPrice(new BigDecimal("20"));
 
         Order order = new Order();
         order.setUserId(1L);
-        order.addItem(item1,2);
-        order.addItem(item2,1);
-        order.updatePrice();
+        order.addItem(item1, 2);
+        order.addItem(item2, 1);
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
 
         // Act
@@ -104,16 +102,16 @@ class OrderRepositoryTest {
 
         Order order = new Order();
         order.setUserId(1L);
-        order.addItem(item1,2);
-        order.updatePrice();
+        order.addItem(item1, 2);
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
 
         Order order2 = new Order();
         order2.setUserId(2L);
-        order2.addItem(item2,2);
-        order2.updatePrice();
+        order2.addItem(item2, 2);
+        order2.updateTotalPrice();
         order2.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order2);
 
@@ -139,17 +137,17 @@ class OrderRepositoryTest {
 
         Order order = new Order();
         order.setUserId(1L);
-        order.addItem(item1,2);
-        order.updatePrice();
+        order.addItem(item1, 2);
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
 
         Order order2 = new Order();
         order2.setUserId(2L);
-        order2.addItem(item2,2);
-        order2.updatePrice();
-        order2.setOrderStatus(OrderStatus.FAILED);
+        order2.addItem(item2, 2);
+        order2.updateTotalPrice();
+        order2.setOrderStatus(OrderStatus.CANCELED);
         orderRepository.save(order2);
 
         Specification<Order> orderSpecification = OrderSpecification.hasStatus(OrderStatus.CONFIRMED);
@@ -172,13 +170,13 @@ class OrderRepositoryTest {
 
         Order order = new Order();
         order.setUserId(1L);
-        order.addItem(item1,2);
-        order.updatePrice();
+        order.addItem(item1, 2);
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
-        order.addItem(item1,10);
-        order.updatePrice();
+        order.addItem(item1, 10);
+        order.updateTotalPrice();
         orderRepository.save(order);
 
 
@@ -202,13 +200,13 @@ class OrderRepositoryTest {
 
         Order order = new Order();
         order.setUserId(1L);
-        order.addItem(item1,20);
-        order.updatePrice();
+        order.addItem(item1, 20);
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
-        order.removeItem(item1,5);
-        order.updatePrice();
+        order.removeItem(item1, 5);
+        order.updateTotalPrice();
 
 
         // Act
@@ -231,14 +229,14 @@ class OrderRepositoryTest {
 
         Order order = new Order();
         order.setUserId(1L);
-        order.addItem(item1,1);
-        order.updatePrice();
+        order.addItem(item1, 1);
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
 
 
         // Act & Assert
-        assertThrows(RuntimeException.class,()->order.removeItem(item1,5));
+        assertThrows(RuntimeException.class, () -> order.removeItem(item1, 5));
 
     }
 
@@ -253,16 +251,16 @@ class OrderRepositoryTest {
         Item item2 = new Item();
         item2.setName("Item2");
         item2.setPrice(new BigDecimal(10));
-        Item savedItem2= itemRepository.save(item2);
+        Item savedItem2 = itemRepository.save(item2);
 
         Order order = new Order();
         order.setUserId(1L);
-        order.addItem(item1,1);
-        order.updatePrice();
+        order.addItem(item1, 1);
+        order.updateTotalPrice();
         order.setOrderStatus(OrderStatus.CONFIRMED);
         orderRepository.save(order);
-        order.removeItem(savedItem2,5);
-        order.updatePrice();
+        order.removeItem(savedItem2, 5);
+        order.updateTotalPrice();
 
         // Act
         Order result = orderRepository.findById(order.getId()).orElseThrow();

@@ -50,6 +50,11 @@ public class Item extends AuditableEntity {
             return false;
 
         Item that = (Item) o;
+
+        if (this.getId() == null || that.getId() == null) {
+            return false;
+        }
+
         return Objects.equals(this.id, that.id);
     }
 
