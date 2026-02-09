@@ -22,6 +22,7 @@ public class ItemController {
 
     private final Logger logger = LoggerFactory.getLogger(ItemController.class);
     private final ItemService itemService;
+
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
@@ -34,7 +35,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ResponseEntity<ItemDto> findItemById(@PathVariable Long itemId) {
-        logger.info("GET request to /api/v1/items/{} endpoint received",itemId);
+        logger.info("GET request to /api/v1/items/{} endpoint received", itemId);
         return ResponseEntity.ok(itemService.findById(itemId));
     }
 
@@ -46,13 +47,13 @@ public class ItemController {
 
     @PutMapping("/{itemId}")
     public ResponseEntity<ItemDto> updateItemById(@PathVariable Long itemId, @NotNull @Valid @RequestBody ItemUpdateDto itemUpdateDto) {
-        logger.info("PUT request to /api/v1/items/{} endpoint received",itemId);
+        logger.info("PUT request to /api/v1/items/{} endpoint received", itemId);
         return ResponseEntity.ok(itemService.updateItemById(itemId, itemUpdateDto));
     }
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Void> deleteItemById(@PathVariable Long itemId) {
-        logger.info("DELETE request to /api/v1/items/{} endpoint received",itemId);
+        logger.info("DELETE request to /api/v1/items/{} endpoint received", itemId);
         itemService.deleteItemById(itemId);
         return ResponseEntity.noContent().build();
     }

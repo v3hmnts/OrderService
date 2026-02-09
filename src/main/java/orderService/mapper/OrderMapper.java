@@ -14,6 +14,7 @@ public interface OrderMapper {
 
     Order toEntity(OrderDto orderDto);
 
+    @Mapping(source = "createdAt", target = "createdAt")
     OrderDto toDto(Order order);
 
     List<Order> toEntityList(List<OrderDto> dtoList);

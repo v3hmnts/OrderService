@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -46,13 +45,13 @@ class OrderRepositoryTest {
     private OrderItemRepository orderItemRepository;
 
     @AfterEach
-    void afterEach(){
+    void afterEach() {
 
     }
 
 
     @BeforeEach
-    void beforeEach(){
+    void beforeEach() {
         orderRepository.deleteAll();
         itemRepository.deleteAll();
         orderItemRepository.deleteAll();

@@ -13,7 +13,9 @@
             host = ${HOSTNAME}
         </labels>
         <message>
-            <pattern>%d{ISO8601} [%thread] %level %logger{36} - %msg %ex{short} trace_id=%mdc{trace_id} span_id=%mdc{span_id}</pattern>
+            <pattern>%d{ISO8601} [%thread] %level %logger{36} - %msg %ex{short} trace_id=%mdc{trace_id}
+                span_id=%mdc{span_id}
+            </pattern>
         </message>
     </appender>
 
@@ -22,10 +24,11 @@
     </appender>
 
 
-
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{ISO8601} [%thread] %level %logger{36} - %msg %ex{short} trace_id=%mdc{trace_id} span_id=%mdc{span_id}</pattern>
+            <pattern>%d{ISO8601} [%thread] %level %logger{36} - %msg %ex{short} trace_id=%mdc{trace_id}
+                span_id=%mdc{span_id}
+            </pattern>
         </encoder>
     </appender>
 

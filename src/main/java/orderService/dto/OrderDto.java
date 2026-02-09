@@ -4,6 +4,7 @@ import lombok.*;
 import orderService.entity.enums.OrderStatus;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 @Setter
@@ -18,4 +19,5 @@ public class OrderDto {
     private BigDecimal totalPrice;
     private Boolean deleted;
     private List<OrderItemDto> orderItemList;
+    private Instant createdAt;
 }

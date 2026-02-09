@@ -18,10 +18,10 @@ public class SecurityService {
 
     public boolean isResourceOwner(String resourceName, Long resourceId, JwtAuthenticationToken token) {
         Long userIdFromToken = Long.valueOf(token.getToken().getClaimAsString("userId"));
-        if (resourceName.equals("User")) {
+        if ("User".equals(resourceName)) {
             return resourceId.equals(userIdFromToken);
         }
-        if (resourceName.equals("Order")) {
+        if ("Order".equals(resourceName)) {
             Order order = orderRepository.findById(resourceId).orElseThrow(() -> new OrderNotFoundException(resourceId));
             return order.getUserId().equals(userIdFromToken);
         }

@@ -40,31 +40,31 @@ public class OrderController {
 
     @PutMapping("/{orderId}")
     public ResponseEntity<OrderDto> updateOrder(@PathVariable Long orderId, @NotNull @Valid @RequestBody OrderUpdateRequestDto orderUpdateRequestDto) {
-        logger.info("PUT request to /api/v1/orders/{} endpoint received",orderId);
+        logger.info("PUT request to /api/v1/orders/{} endpoint received", orderId);
         return ResponseEntity.ok(orderService.updateOrderById(orderId, orderUpdateRequestDto));
     }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDto> findOrderById(@PathVariable Long orderId) {
-        logger.info("GET request to /api/v1/orders/{} endpoint received",orderId);
+        logger.info("GET request to /api/v1/orders/{} endpoint received", orderId);
         return ResponseEntity.ok(orderService.findById(orderId));
     }
 
     @GetMapping()
     public ResponseEntity<PageDto<OrderDto>> findAllWithAllData(@ModelAttribute @Valid OrderFilterRequest orderFilterRequest, @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        logger.info("GET request to /api/v1/orders endpoint received with OrderFilterRequest {}",orderFilterRequest);
+        logger.info("GET request to /api/v1/orders endpoint received with OrderFilterRequest {}", orderFilterRequest);
         return ResponseEntity.ok(orderService.findAllWithAllData(orderFilterRequest, pageable));
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<OrderDto>> findAllByUserId(@PathVariable Long userId) {
-        logger.info("GET request to /api/v1/orders/user/{} endpoint received",userId);
+        logger.info("GET request to /api/v1/orders/user/{} endpoint received", userId);
         return ResponseEntity.ok(orderService.findAllByUserId(userId));
     }
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<Void> deleteOrderById(@PathVariable Long orderId) {
-        logger.info("DELETE request to /api/v1/orders/{} endpoint received",orderId);
+        logger.info("DELETE request to /api/v1/orders/{} endpoint received", orderId);
         orderService.deleteById(orderId);
         return ResponseEntity.noContent().build();
     }
