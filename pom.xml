@@ -31,6 +31,8 @@
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <jjwt.version>0.12.7</jjwt.version>
+        <sonar.organization>v3hmnts</sonar.organization>
+        <sonar.projectKey>v3hmnts_OrderService</sonar.projectKey>
         <docker.image.prefix>order-service</docker.image.prefix>
     </properties>
     <dependencies>
@@ -38,6 +40,10 @@
             <groupId>org.wiremock.integrations</groupId>
             <artifactId>wiremock-spring-boot</artifactId>
             <version>3.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.resilience4j</groupId>

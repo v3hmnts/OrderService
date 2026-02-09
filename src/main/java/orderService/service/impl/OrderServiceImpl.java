@@ -110,8 +110,8 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto updateOrderById(Long orderId, OrderUpdateRequestDto orderDto) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
         handleOrderUpdate(order, orderDto);
-        OrderDto orderDtoToReturn = orderMapper.toDto(order);
-        return addUserDtoToOrderDto(orderDtoToReturn, order.getUserId());
+        OrderDto saved = orderMapper.toDto(orderRepository.save(order));
+        return addUserDtoToOrderDto(saved,order.getUserId());
     }
 
     private void handleOrderUpdate(Order order, OrderUpdateRequestDto orderDto) {

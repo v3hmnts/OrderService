@@ -266,6 +266,7 @@ class OrderServiceUnitTest {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
         when(userServiceClient.findUserById(1L)).thenReturn(userDto);
+        when(orderRepository.save(order)).thenReturn(order);
 
         // Act
         OrderDto result = orderService.updateOrderById(1L, null);
@@ -289,6 +290,7 @@ class OrderServiceUnitTest {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
         when(userServiceClient.findUserById(1L)).thenReturn(userDto);
+        when(orderRepository.save(order)).thenReturn(order);
 
         // Act
         OrderDto result = orderService.updateOrderById(1L, updateRequest);
@@ -313,6 +315,7 @@ class OrderServiceUnitTest {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
         when(userServiceClient.findUserById(1L)).thenReturn(userDto);
+        when(orderRepository.save(order)).thenReturn(order);
 
         // Act
         OrderDto result = orderService.updateOrderById(1L, updateRequest);
@@ -347,6 +350,7 @@ class OrderServiceUnitTest {
         when(itemRepository.findById(2L)).thenReturn(Optional.of(item2));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
         when(userServiceClient.findUserById(1L)).thenReturn(userDto);
+        when(orderRepository.save(order)).thenReturn(order);
 
         // Act
         OrderDto result = orderService.updateOrderById(1L, updateRequest);
